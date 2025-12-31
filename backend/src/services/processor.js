@@ -11,18 +11,22 @@ const __dirname = dirname(__filename);
 export async function processImageLocal(inputPath, bgColor = 'transparent') {
     const outputPath = inputPath.replace(/\.\w+$/, '-nobg.png');
     // Use the virtual environment python
-    const venvPython = join(__dirname, '../python/venv/bin/python');
-    const pythonScript = join(__dirname, '../python/remove_bg.py');
+    // Use relative path for python execution to avoid issues with spaces in directory names
+    const pythonExecutable = './src/python/venv/bin/python';
+    // We must pass the script path relative to the CWD as well or absolute (absolute is fine for script argument usually)
+    // But let's be safe and use relative for script too if CWD is backend root
+    const pythonScriptRel = './src/python/remove_bg.py';
 
-    // Force usage of venv python
-    const pythonExecutable = venvPython;
-    logger.info(`Using python executable: ${pythonExecutable}`);
+    logger.info(`Spawning python: ${pythonExecutable} ${pythonScriptRel} in CWD: ${process.cwd()}`);
 
     return new Promise((resolve, reject) => {
         const args = ['--input', inputPath, '--output', outputPath];
         if (bgColor !== 'transparent') args.push('--bg_color', bgColor);
 
-        const pythonProcess = spawn(pythonExecutable, [pythonScript, ...args]);
+        const pythonProcess = spawn(pythonExecutable, [pythonScriptRel, ...args], {
+            cwd: process.cwd(), // Ensure we are running from backend root
+            shell: false // Don't use shell to avoid extra escaping needs, direct spawn is safer
+        });
 
         let stderr = '';
         pythonProcess.stderr.on('data', d => stderr += d);

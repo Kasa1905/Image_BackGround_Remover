@@ -52,8 +52,8 @@ function ImageCompareSlider({ originalImage, processedImage }) {
                 role="img"
                 aria-label="Image comparison slider"
             >
-                <img src={originalImage} alt="Original" className="image-before" />
-                <img src={processedImage} alt="Processed" className="image-after" />
+                <img src={processedImage} alt="Processed" className="image-before" />
+                <img src={originalImage} alt="Original" className="image-after" />
 
                 <div
                     className="slider-handle"
