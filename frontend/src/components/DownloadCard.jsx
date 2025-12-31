@@ -1,8 +1,17 @@
+import { useState } from 'react';
+
 function DownloadCard({ processedImage, onReset }) {
+    const [filename, setFilename] = useState(processedImage.filename || 'no-bg.png');
+
     const handleDownload = () => {
         const link = document.createElement('a');
         link.href = `data:${processedImage.mime};base64,${processedImage.data}`;
-        link.download = processedImage.filename || 'no-bg.png';
+        // Use the edited filename, ensure it has .png extension
+        let finalFilename = filename;
+        if (!finalFilename.toLowerCase().endsWith('.png')) {
+            finalFilename += '.png';
+        }
+        link.download = finalFilename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -22,7 +31,12 @@ function DownloadCard({ processedImage, onReset }) {
             <div className="download-info">
                 <div className="download-info-item">
                     <span className="download-info-label">Filename:</span>
-                    <span className="download-info-value">{processedImage.filename}</span>
+                    <input
+                        type="text"
+                        value={filename}
+                        onChange={(e) => setFilename(e.target.value)}
+                        className="filename-input"
+                    />
                 </div>
 
                 {processedImage.metadata && (

@@ -9,6 +9,9 @@ coverage
 # Production
 dist
 build
+uploads/
+tmp/
+*.log
 
 # Misc
 .DS_Store
@@ -27,4 +30,11 @@ __pycache__/
 *$py.class
 venv/
 src/python/venv/
+.venv/
+.python-version
+.vscode/
+.idea/
 .pytest_cache/
+
+# macOS
+.DS_Store
