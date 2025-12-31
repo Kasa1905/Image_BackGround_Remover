@@ -1,0 +1,12 @@
+{
+    "ignore": [
+        "node_modules",
+        "src/python/venv",
+        "src/python/__pycache__",
+        "uploads"
+    ],
+    "watch": [
+        "src"
+    ],
+    "ext": "js,json"
+}
