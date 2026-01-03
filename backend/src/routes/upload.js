@@ -32,12 +32,21 @@ router.post('/remove-background', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ ok: false, error: 'No file uploaded' });
 
-        const { mode = 'local', bg_color = 'transparent' } = req.body;
-        logger.info('Processing', { filename: req.file.originalname, mode });
+        const { mode = 'local', bg_color = 'transparent', api_provider = 'removebg' } = req.body;
+        const allowLocal = process.env.ENABLE_LOCAL ? process.env.ENABLE_LOCAL === 'true' : true;
+        const allowApi = Boolean(process.env.REMOVE_BG_API_KEY);
+
+        const normalizedBg = typeof bg_color === 'string' ? bg_color.trim() : 'transparent';
+        logger.info('Processing', { filename: req.file.originalname, mode, provider: api_provider });
 
         let result;
-        if (mode === 'local') result = await processImageLocal(req.file.path, bg_color);
-        else result = await processImageAPI(req.file.path, 'removebg', bg_color);
+        if (mode === 'local') {
+            if (!allowLocal) throw new Error('Local processing is disabled on this deployment');
+            result = await processImageLocal(req.file.path, normalizedBg);
+        } else {
+            if (!allowApi) throw new Error('API mode requires REMOVE_BG_API_KEY');
+            result = await processImageAPI(req.file.path, api_provider, normalizedBg);
+        }
 
         const imageBuffer = await fs.readFile(result.outputPath);
 

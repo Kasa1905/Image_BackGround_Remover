@@ -1,10 +1,10 @@
 # Image Background Remover
 
-Background removal web app with a React (Vite) frontend, Express backend, and Python (rembg) worker. Run locally or via Docker Compose.
+Background removal web app with a React (Vite) frontend, Express backend, and Python (rembg) worker. Run locally, via Docker Compose, or deploy the frontend + API to Vercel (API mode only).
 
 ## Features
 - Upload images (JPG/PNG/WEBP/GIF) up to 10MB
-- Remove background locally using rembg (offline) or via remove.bg API
+- Remove background locally using rembg (offline, default enabled) or via remove.bg API (Vercel uses API mode only)
 - Optional custom background colors
 - Health endpoint for monitoring and simple logging via Winston
 
@@ -32,8 +32,10 @@ PORT=3001
 FRONTEND_URL=http://localhost:5173
 MAX_FILE_SIZE_MB=10
 UPLOAD_DIR=/tmp/uploads
-# Optional for API mode
+# Optional for API mode (required on Vercel)
 REMOVE_BG_API_KEY=your_remove_bg_key
+# Set to false to disable local processing (e.g., on Vercel)
+ENABLE_LOCAL=true
 LOG_LEVEL=info
 ```
 3) Set frontend envs in `frontend/.env` (sample):
@@ -69,7 +71,7 @@ docker-compose up --build
 - Frontend: `http://localhost:5173`
 
 ## API (backend)
-- `POST /api/remove-background` form-data: `image` (file), optional `mode` (`local`|`api`, default `local`), optional `bg_color` (hex or `transparent`). Returns base64 PNG.
+- `POST /api/remove-background` form-data: `image` (file), optional `mode` (`local`|`api`, default `api` on Vercel), optional `bg_color` (hex or `transparent`). Returns base64 PNG. Set `api_provider=removebg` when using API mode.
 - `GET /health` returns `{ status: "healthy" }`.
 
 ## Project Structure
@@ -94,6 +96,12 @@ frontend/
 - `npm run install:all` – install deps for root, backend, frontend
 - `npm run dev` – run backend + frontend concurrently
 - `npm run build` – run backend + frontend builds (frontend uses Vite; backend currently no build step)
+
+## Vercel Deployment (API mode)
+- Serverless function entry: `api/index.js` wraps the Express app; requests to `/api/*` are rewritten there via `vercel.json`.
+- Build command installs workspaces then builds the Vite app; output directory is `frontend/dist`.
+- Required env vars in Vercel project: `REMOVE_BG_API_KEY` (for remove.bg) and optionally `ENABLE_LOCAL=false` (keeps local mode off). Local mode is not available on Vercel.
+- Frontend API base is relative (`/api`), so no extra configuration is needed for the client.
 
 ## Troubleshooting
 - Connection issues: verify `VITE_API_URL` matches backend and CORS `FRONTEND_URL`.

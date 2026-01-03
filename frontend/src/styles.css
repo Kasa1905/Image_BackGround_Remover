@@ -204,6 +204,12 @@ body::before {
   font-weight: 900;
   margin-bottom: 1.5rem;
 }
+.hero-subtitle {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
 
 .gradient-text {
   background: var(--primary-gradient);
@@ -249,6 +255,15 @@ body::before {
   border-color: var(--primary);
   transform: scale(1.02);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.image-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .upload-icon {
@@ -303,6 +318,15 @@ body::before {
   border-top: 2px solid var(--border-color);
 }
 
+.error-message {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 107, 107, 0.1);
+  color: #b42318;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
 .option-group {
   margin-bottom: 2rem;
 }
@@ -317,6 +341,11 @@ body::before {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+}
+.color-picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .radio-option {
@@ -375,6 +404,27 @@ body::before {
   border-radius: 8px;
   margin-bottom: 0.5rem;
   border: 2px solid var(--bg-secondary);
+}
+.custom-color-input {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.custom-color-input input[type="color"] {
+  width: 52px;
+  height: 52px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+  cursor: pointer;
+}
+.custom-color-input input[type="text"] {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .processing {
